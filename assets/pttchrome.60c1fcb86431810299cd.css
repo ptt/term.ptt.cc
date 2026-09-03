@@ -1,6 +1,6 @@
 @font-face {
   font-family: SymMingLiu;
-  src: url(../7e984bcac69405df56c5.woff) format("woff");
+  src: url(assets/7e984bcac69405df56c5.woff) format("woff");
 }
 
 #picPreview {
@@ -34,7 +34,7 @@
 #logo {
   width: 85px;
   height: 90px;
-  background: url(../a1195eca3104ee88d032.png) 0 0/85px 85px no-repeat;
+  background: url(assets/a1195eca3104ee88d032.png) 0 0/85px 85px no-repeat;
 }
 
 .font_btn {
@@ -372,7 +372,7 @@ span {
 
 .y:not(.o), .y::before, .y::after
 {
- background-image: url(../bf39598e8230aa5be40d.bmp?inline);
+ background-image: url(assets/bf39598e8230aa5be40d.bmp?inline);
  background-repeat: repeat-x;
  background-position: 0% 90%;
 }
@@ -699,4 +699,4 @@ span {
 }
 
 
-/*# sourceMappingURL=pttchrome.3ea21f8a751356c69c59.css.map*/
+/*# sourceMappingURL=pttchrome.60c1fcb86431810299cd.css.map*/
