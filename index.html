@@ -1,6 +1,61 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      (function () {
+        try {
+          var nav = typeof navigator !== 'undefined' ? navigator : null;
+          var win = typeof window !== 'undefined' ? window : null;
+          var navProto = (nav && Object.getPrototypeOf(nav)) || (typeof Navigator !== 'undefined' ? Navigator.prototype : null);
+          var winProto = (win && Object.getPrototypeOf(win)) || (typeof Window !== 'undefined' ? Window.prototype : null);
+          var neutralize = function (target, prop, val) {
+            if (!target) return;
+            try {
+              var desc = Object.getOwnPropertyDescriptor(target, prop);
+              if (!desc || !desc.configurable) return;
+              if (val === undefined) {
+                delete target[prop];
+                if (prop in target) {
+                  Object.defineProperty(target, prop, { value: undefined, configurable: true, writable: true, enumerable: false });
+                }
+              } else {
+                Object.defineProperty(target, prop, { get: function () { return val; }, configurable: true, enumerable: true });
+              }
+            } catch (e) {}
+          };
+          var quotaShim = {
+            queryUsageAndQuota: function (cb, errCb) {
+              if (nav && nav.storage && typeof nav.storage.estimate === 'function') {
+                nav.storage.estimate().then(function (est) { if (cb) cb(est.usage || 0, est.quota || 0); }, errCb);
+              } else if (cb) {
+                cb(0, 0);
+              }
+            },
+            requestQuota: function (bytes, cb, errCb) {
+              if (nav && nav.storage && typeof nav.storage.persist === 'function') {
+                nav.storage.persist().then(function () { quotaShim.queryUsageAndQuota(function (u, q) { if (cb) cb(q ? Math.min(bytes, q) : bytes); }, errCb); }, errCb);
+              } else if (cb) {
+                cb(bytes);
+              }
+            }
+          };
+          neutralize(navProto, 'webkitPersistentStorage', quotaShim);
+          neutralize(nav, 'webkitPersistentStorage', quotaShim);
+          var fledgeProps = [
+            'joinAdInterestGroup', 'leaveAdInterestGroup', 'updateAdInterestGroups',
+            'clearOriginJoinedAdInterestGroups', 'runAdAuction', 'getInterestGroupAdAuctionData',
+            'canLoadAdAuctionFencedFrame', 'createAuctionNonce', 'deprecatedURNToURL',
+            'deprecatedReplaceInURN', 'adAuctionComponents', 'protectedAudience'
+          ];
+          for (var i = 0; i < fledgeProps.length; i++) {
+            neutralize(navProto, fledgeProps[i], undefined);
+            neutralize(nav, fledgeProps[i], undefined);
+          }
+          neutralize(winProto, 'sharedStorage', undefined);
+          neutralize(win, 'sharedStorage', undefined);
+        } catch (e) {}
+      })();
+    </script>
     <title>批踢踢實業坊</title>
     <link rel="icon" type="image/png" href="./assets/logo-BKZbQyKz.png">
     <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
@@ -18,7 +73,7 @@
     <meta http-equiv="Expires" content="0"/>
     <meta name="description" property="og:description"
                              content="使用網頁版終端機連線至批踢踢實業坊(ptt.cc) -- 以學術性質為目的，提供各專業學生實習的平台，而以電子佈告欄系統為主的一系列服務。期許在網際網路上建立起一個快速、即時、平等、免費，開放且自由的言論空間。">
-    <script type="module" crossorigin src="./assets/index-B5ABK7vW.js"></script>
+    <script type="module" crossorigin src="./assets/index-BYN2BeI0.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Cbgm_7GV.css">
   </head>
 
